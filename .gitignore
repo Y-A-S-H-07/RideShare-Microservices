@@ -1,0 +1,14 @@
+# Spring Boot configs
+application.properties
+application.yml
+application.yaml
+
+# Ignore all application properties inside microservices
+**/application.properties
+**/application.yml
+**/application.yaml
+
+target/
+.idea/
+.DS_Store
+*.log
