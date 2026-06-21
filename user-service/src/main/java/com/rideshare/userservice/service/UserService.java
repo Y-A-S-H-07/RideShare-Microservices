@@ -7,6 +7,9 @@ import com.rideshare.userservice.model.Role;
 import com.rideshare.userservice.repository.UserRepository;
 import com.rideshare.userservice.repository.WalletRepository;
 
+import com.rideshare.userservice.security.JwtUtil;
+
+
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -19,6 +22,11 @@ public class UserService {
 
     @Autowired
     private WalletRepository walletRepository;
+
+    @Autowired
+    private JwtUtil jwtUtil;
+
+
 
    public User registerUser(User user) {
 
@@ -64,5 +72,15 @@ public class UserService {
     public Wallet getWallet(Long userId) {
         return walletRepository.findByUserId(userId)
                 .orElseThrow(() -> new RuntimeException("Wallet not found"));
+    }
+
+    public User getUserById(Long id) {
+
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found"));
+    }
+
+    public String generateToken(User user) {
+        return jwtUtil.generateToken(user.getEmail());
     }
 }

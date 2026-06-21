@@ -11,6 +11,8 @@ import com.rideshare.userservice.model.Transaction;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
+import com.rideshare.userservice.dto.AuthResponse;
+
 import java.util.List;
 
 @RestController
@@ -35,10 +37,21 @@ public class UserController {
 
 
     @PostMapping("/login")
-    public User login(@RequestBody User user) {
-        return userService.login(user.getEmail(), user.getPassword());
-    }
+    public AuthResponse login(@RequestBody User user) {
 
+        User loggedInUser =
+                userService.login(user.getEmail(), user.getPassword());
+
+        String token =
+                userService.generateToken(loggedInUser);
+
+        return new AuthResponse(
+                token,
+                loggedInUser.getId(),
+                loggedInUser.getName(),
+                loggedInUser.getRole().name()
+        );
+    }
 
     @GetMapping("/wallet")
     public Wallet getWallet(@RequestParam Long userId) {
@@ -53,6 +66,11 @@ public class UserController {
     public List<Transaction> getUserTransactions(@RequestParam Long userId) {
         return transactionRepository
                 .findByFromUserIdOrToUserIdOrderByIdDesc(userId, userId);
+    }
+
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable Long id) {
+        return userService.getUserById(id);
     }
 
 

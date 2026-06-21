@@ -11,9 +11,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.client.RestTemplate;
 import org.springframework.http.ResponseEntity;
 import java.util.Map;
+import com.rideshare.rideservice.client.UserClient;
+import com.rideshare.rideservice.dto.UserDTO;
 
 @Service
 public class RideService {
+
+    @Autowired
+    private UserClient userClient;
 
 
     @Autowired
@@ -47,6 +52,12 @@ public class RideService {
         );
     }
     public Ride createRide(Ride ride) {
+
+        UserDTO host = userClient.getUserById(ride.getHostId());
+
+        if (host == null) {
+            throw new RuntimeException("Host not found");
+        }
 
         int totalSeats = getSeatsFromVehicleType(ride.getVehicleType());
         ride.setTotalSeats(totalSeats);
@@ -104,6 +115,11 @@ public class RideService {
     }
 
     public String joinRide(Long rideId, Long userId) {
+        UserDTO user = userClient.getUserById(userId);
+
+        if (user == null) {
+            throw new RuntimeException("User not found");
+        }
 
         Ride ride = rideRepository.findById(rideId)
                 .orElseThrow(() -> new RuntimeException("Ride not found"));
