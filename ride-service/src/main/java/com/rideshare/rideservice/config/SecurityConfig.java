@@ -27,6 +27,7 @@ public class SecurityConfig {
                         )
                 )
                 .authorizeHttpRequests(auth -> auth
+                        .requestMatchers("/drivers/register").permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(

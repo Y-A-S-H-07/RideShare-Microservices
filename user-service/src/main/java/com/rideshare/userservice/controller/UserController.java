@@ -1,5 +1,6 @@
 package com.rideshare.userservice.controller;
 
+import com.rideshare.userservice.dto.DriverRegisterRequest;
 import com.rideshare.userservice.model.User;
 import com.rideshare.userservice.model.Wallet;
 import com.rideshare.userservice.model.Notification;
@@ -71,6 +72,13 @@ public class UserController {
     @GetMapping("/{id}")
     public User getUserById(@PathVariable Long id) {
         return userService.getUserById(id);
+    }
+
+    @PostMapping("/register-driver")
+    public User registerDriver(
+            @RequestBody DriverRegisterRequest request) {
+
+        return userService.registerDriver(request);
     }
 
 

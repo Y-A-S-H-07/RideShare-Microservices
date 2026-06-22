@@ -8,7 +8,7 @@ import com.rideshare.userservice.repository.UserRepository;
 import com.rideshare.userservice.repository.WalletRepository;
 
 import com.rideshare.userservice.security.JwtUtil;
-
+import com.rideshare.userservice.dto.DriverRegisterRequest;
 
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -34,12 +34,37 @@ public class UserService {
             throw new RuntimeException("Email already registered");
         }
 
-        user.setRole(Role.USER);
+        user.setRole(Role.DRIVER);
 
         User savedUser = userRepository.save(user);
 
         // create wallete
 
+
+        Wallet wallet = new Wallet();
+        wallet.setUser(savedUser);
+        wallet.setBalance(0.0);
+
+        walletRepository.save(wallet);
+
+        return savedUser;
+    }
+
+
+    public User registerDriver(DriverRegisterRequest request) {
+
+        if (userRepository.findByEmail(request.getEmail()).isPresent()) {
+            throw new RuntimeException("Email already registered");
+        }
+
+        User user = new User();
+
+        user.setName(request.getName());
+        user.setEmail(request.getEmail());
+        user.setPassword(request.getPassword());
+        user.setRole(Role.DRIVER);
+
+        User savedUser = userRepository.save(user);
 
         Wallet wallet = new Wallet();
         wallet.setUser(savedUser);

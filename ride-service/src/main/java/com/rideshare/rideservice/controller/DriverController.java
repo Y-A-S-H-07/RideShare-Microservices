@@ -23,6 +23,10 @@ public class DriverController {
 
     @GetMapping("/by-user")
     public Driver getDriverByUser(@RequestParam Long userId) {
+
+        System.out.println("DRIVER API HIT");
+
         return driverService.getDriverByUserId(userId);
     }
+
 }

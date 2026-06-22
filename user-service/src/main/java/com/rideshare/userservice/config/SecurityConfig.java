@@ -27,7 +27,9 @@ public class SecurityConfig {
                 .authorizeHttpRequests(auth -> auth
                         .requestMatchers(
                                 "/users/register",
-                                "/users/login"
+                                "/users/login",
+                                "/users/register-driver",
+                                "/users/{id}"
                         ).permitAll()
                         .anyRequest().authenticated()
                 )

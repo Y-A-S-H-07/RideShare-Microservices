@@ -138,4 +138,6 @@ public class RideController {
     public Ride arrivedRide(@RequestParam Long rideId) {
         return rideService.arrivedRide(rideId);
     }
+
+
 }

@@ -1,0 +1,16 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  input, textarea {
+    @apply text-gray-900;
+  }
+
+  body {
+    @apply text-gray-900;
+  }
+}
+body {
+  transition: all 0.2s ease-in-out;
+}
