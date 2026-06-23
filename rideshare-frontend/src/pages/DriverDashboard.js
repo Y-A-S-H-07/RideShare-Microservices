@@ -15,7 +15,8 @@ function DriverDashboard() {
   const [driverLoading, setDriverLoading] = useState(true);
   const [activeRide, setActiveRide] = useState(null);
   const token = localStorage.getItem("token");
-
+  console.log("user =", user);
+  console.log("token =", token);
   // redirect if not driver
   useEffect(() => {
     if (!user || user.role !== "DRIVER") {
@@ -27,6 +28,10 @@ function DriverDashboard() {
   useEffect(() => {
     fetchDriver();
   }, []);
+
+  useEffect(() => {
+    console.log("driverId state =", driverId);
+  }, [driverId]);
 
   // fetch active ride after driver loads
   useEffect(() => {
@@ -53,6 +58,8 @@ function DriverDashboard() {
   };
 
   const fetchDriver = async () => {
+
+    
     try {
       const res = await fetch(
         `${API}/drivers/by-user?userId=${user.id}`,
@@ -64,8 +71,10 @@ function DriverDashboard() {
       );
 
       const data = await res.json();
+      console.log("Driver API Response =", data);
 
       setDriverId(data.id);
+      console.log("Setting driverId =", data.id);
       setDriverLoading(false);
       checkActiveRide(data.id);
     } catch (err) {
@@ -111,6 +120,9 @@ function DriverDashboard() {
   };
 
   const acceptRide = async (rideId) => {
+    console.log("ACCEPT CLICKED -> driverId =", driverId);
+
+  
     try {
       const response = await fetch(
         `${API}/rides/accept?rideId=${rideId}&driverId=${driverId}`,
@@ -130,9 +142,13 @@ function DriverDashboard() {
         toast.success("Ride accepted");
         navigate(`/driver/ride/${rideId}`);
       }
+
+      
     } catch (err) {
       toast.error("Something went wrong");
     }
+
+    
   };
 
   const startRide = async (rideId) => {

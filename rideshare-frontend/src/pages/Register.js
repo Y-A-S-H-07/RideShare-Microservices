@@ -18,7 +18,7 @@ function Register() {
   const register = async () => {
     const url =
       role === "DRIVER"
-        ? `${API}/drivers/register`
+        ? `${API}/users/register-driver`
         : `${API}/users/register`;
 
     try {

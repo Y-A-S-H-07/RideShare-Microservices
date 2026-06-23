@@ -1,6 +1,8 @@
 package com.rideshare.userservice.service;
 
 
+import com.rideshare.userservice.client.RideServiceClient;
+import com.rideshare.userservice.dto.DriverRegistrationRequest;
 import com.rideshare.userservice.model.User;
 import com.rideshare.userservice.model.Wallet;
 import com.rideshare.userservice.model.Role;
@@ -16,6 +18,9 @@ import org.springframework.stereotype.Service;
 
 @Service
 public class UserService {
+
+    @Autowired
+    private RideServiceClient rideServiceClient;
 
     @Autowired
     private UserRepository userRepository;
@@ -34,7 +39,7 @@ public class UserService {
             throw new RuntimeException("Email already registered");
         }
 
-        user.setRole(Role.DRIVER);
+       user.setRole(Role.USER);
 
         User savedUser = userRepository.save(user);
 
@@ -65,6 +70,15 @@ public class UserService {
         user.setRole(Role.DRIVER);
 
         User savedUser = userRepository.save(user);
+        DriverRegistrationRequest driverRequest =
+                new DriverRegistrationRequest();
+
+        driverRequest.setUserId(savedUser.getId());
+        driverRequest.setVehicleName(request.getVehicleName());
+        driverRequest.setVehicleNumber(request.getVehicleNumber());
+        driverRequest.setMaxSeats(request.getMaxSeats());
+
+        rideServiceClient.registerDriver(driverRequest);
 
         Wallet wallet = new Wallet();
         wallet.setUser(savedUser);

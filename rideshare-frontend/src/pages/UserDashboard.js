@@ -18,30 +18,43 @@ function UserDashboard() {
 
   const fetchMyRides = async () => {
     try {
-      const res = await fetch(`${API}/rides/all`);
+
+      const res = await fetch(`${API}/rides/all`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      });
+
       const data = await res.json();
 
+      console.log("ALL RIDES =", data);
+      console.log("CURRENT USER =", user);
+
       const filtered = data
-      .filter(
-        (ride) =>
-          ride.host?.id === user.id &&
-          ride.status !== "COMPLETED"  
-      )
-      .sort((a, b) => b.id - a.id); // newest first
+        .filter(
+          (ride) =>
+            ride.hostId === user.id &&
+            ride.status !== "COMPLETED"
+        )
+        .sort((a, b) => b.id - a.id);
 
       setMyRides(filtered);
+
     } catch (err) {
       console.error("Error fetching rides:", err);
     }
   };
-
   useEffect(() => {
     fetchMyRides();
   }, []);
 
   const fetchRequests = async (rideId) => {
     try {
-      const res = await fetch(`${API}/rides/all`);
+      const res = await fetch(`${API}/rides/all`, {
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`
+        }
+      });
       const data = await res.json();
 
       const ride = data.find((r) => r.id === rideId);
@@ -65,7 +78,12 @@ function UserDashboard() {
     try {
       await fetch(
         `${API}/rides/accept-request?rideId=${rideId}&userId=${userId}&hostId=${user.id}`,
-        { method: "POST" }
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        }
       );
       fetchMyRides();
     } catch (err) {
@@ -77,7 +95,12 @@ function UserDashboard() {
     try {
       await fetch(
         `${API}/rides/reject-request?rideId=${rideId}&userId=${userId}&hostId=${user.id}`,
-        { method: "POST" }
+        {
+          method: "POST",
+          headers: {
+            Authorization: `Bearer ${localStorage.getItem("token")}`
+          }
+        }
       );
       fetchMyRides();
     } catch (err) {
@@ -179,13 +202,13 @@ function UserDashboard() {
                             key={req.id}
                             className="flex justify-between items-center text-sm"
                           >
-                            <p>User ID: {req.user?.id}</p>
+                            <p>User ID: {req.userId}</p>
 
                             <div className="flex gap-2">
                               <button
                                 className="px-3 py-1 border rounded hover:bg-gray-100"
                                 onClick={() =>
-                                  acceptRequest(ride.id, req.user.id)
+                                  acceptRequest(ride.id, req.userId)
                                 }
                               >
                                 Accept
@@ -194,7 +217,7 @@ function UserDashboard() {
                               <button
                                 className="px-3 py-1 border rounded hover:bg-gray-100"
                                 onClick={() =>
-                                  rejectRequest(ride.id, req.user.id)
+                                  rejectRequest(ride.id, req.userId)
                                 }
                               >
                                 Reject

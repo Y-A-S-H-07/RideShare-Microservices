@@ -54,8 +54,15 @@ function CreateRide() {
 
     try {
       for (let type of types) {
+        const token = localStorage.getItem("token");
+
         const res = await fetch(
-          `${API}/rides/estimate?source=${source}&destination=${destination}&vehicleType=${type}`
+          `${API}/rides/estimate?source=${source}&destination=${destination}&vehicleType=${type}`,
+          {
+            headers: {
+              Authorization: `Bearer ${token}`
+            }
+          }
         );
 
         const data = await res.json();
@@ -82,16 +89,21 @@ function CreateRide() {
     }
 
     try {
+      const token = localStorage.getItem("token");
+
       const res = await fetch(`${API}/rides/create`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
+        headers: {
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`
+        },
         body: JSON.stringify({
           source,
           destination,
           vehicleType,
           hostSeats,
           totalFare: Number(fares[vehicleType] || 0),
-          host: { id: user.id }
+          hostId: user.id
         })
       });
 
@@ -107,16 +119,25 @@ function CreateRide() {
   };
 
   useEffect(() => {
-    fetch(`${API}/rides/all`)
+
+    const token = localStorage.getItem("token");
+
+    fetch(`${API}/rides/all`, {
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
+    })
       .then(res => res.json())
       .then(data => {
         const active = data.some(
           r =>
-            r.host?.id === user.id &&
+            r.hostId === user.id &&
             ["CREATED", "ACCEPTED", "STARTED"].includes(r.status)
         );
         setHasActiveRide(active);
-      });
+      })
+      .catch(console.error);
+
   }, []);
 
   return (

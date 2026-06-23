@@ -97,7 +97,7 @@ function SearchRide() {
   const joinRide = async (rideId) => {
     try {
       const res = await fetch(
-        `${API}/rides/join?rideId=${rideId}`,
+        `${API}/rides/join?rideId=${rideId}&userId=${user.id}`,
         {
           method: "POST",
           headers: { "Content-Type": "application/json" },

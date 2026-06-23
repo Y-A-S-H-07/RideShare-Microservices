@@ -7,13 +7,18 @@ function DriverRideDetails() {
   const API = process.env.REACT_APP_API_URL;
   const { rideId } = useParams();
   const navigate = useNavigate();
+  const token = localStorage.getItem("token");
 
   const [ride, setRide] = useState(null);
 
   // fetch ride details
   const fetchRide = async () => {
     try {
-      const res = await fetch(`${API}/rides/all`);
+      const res = await fetch(`${API}/rides/all`, {
+        headers: {
+          Authorization: `Bearer ${token}`
+        }
+      });
       const data = await res.json();
 
       const currentRide = data.find(
@@ -33,6 +38,9 @@ function DriverRideDetails() {
   const arrived = async () => {
     await fetch(`${API}/rides/arrived?rideId=${rideId}`, {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     });
     toast.success("Arrived at pickup");
     fetchRide();
@@ -41,6 +49,9 @@ function DriverRideDetails() {
   const startRide = async () => {
     await fetch(`${API}/rides/start?rideId=${rideId}`, {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     });
     toast.success("Ride started");
     fetchRide();
@@ -49,6 +60,9 @@ function DriverRideDetails() {
   const completeRide = async () => {
     await fetch(`${API}/rides/complete?rideId=${rideId}`, {
       method: "POST",
+      headers: {
+        Authorization: `Bearer ${token}`
+      }
     });
     toast.success("Ride completed");
     fetchRide();

@@ -27,7 +27,12 @@ public class SecurityConfig {
                         )
                 )
                 .authorizeHttpRequests(auth -> auth
-                        .requestMatchers("/drivers/register").permitAll()
+                        .requestMatchers(
+                                "/drivers/register",
+                                "/drivers/by-user",
+                                "/rides/search",
+                                "/rides/join"
+                        ).permitAll()
                         .anyRequest().authenticated()
                 )
                 .addFilterBefore(
